@@ -1,6 +1,7 @@
 import * as qs from 'qs';
 import * as crypto from 'crypto';
 import * as rp from 'request-promise-native';
+import { Config } from './config';
 
 export namespace Private {
   
@@ -29,7 +30,7 @@ export namespace Private {
     const sign = crypto.createHmac('sha512', secret).update(form).digest('hex');
 
     const options = {
-      url: 'https://api.zaif.jp/tapi',
+      url: Config.endpoint + '/tapi',
       method: 'POST',
       headers: {
         Key: key,

@@ -1,11 +1,12 @@
 import * as rp from 'request-promise-native';
+import { Config } from './config';
 
 export namespace Public {
 
   function send_request(path: string, currency_pairs: string, query: any = {}): any {
     path = `/api/1/${path}/${currency_pairs}`;
     const options = {
-      url: 'https://api.zaif.jp' + path,
+      url: Config.endpoint + path,
       method: 'GET',
       json: true,
       query: query

@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const rp = require("request-promise-native");
+const config_1 = require("./config");
 var Public;
 (function (Public) {
     function send_request(path, currency_pairs, query = {}) {
         path = `/api/1/${path}/${currency_pairs}`;
         const options = {
-            url: 'https://api.zaif.jp' + path,
+            url: config_1.Config.endpoint + path,
             method: 'GET',
             json: true,
             query: query

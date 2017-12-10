@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const qs = require("qs");
 const crypto = require("crypto");
 const rp = require("request-promise-native");
+const config_1 = require("./config");
 var Private;
 (function (Private) {
     let key = process.env.ZAIF_KEY;
@@ -25,7 +26,7 @@ var Private;
         const form = qs.stringify(Object.assign({}, body, query));
         const sign = crypto.createHmac('sha512', secret).update(form).digest('hex');
         const options = {
-            url: 'https://api.zaif.jp/tapi',
+            url: config_1.Config.endpoint + '/tapi',
             method: 'POST',
             headers: {
                 Key: key,
