@@ -2,8 +2,10 @@
   "name": "zaif-promise",
   "version": "0.0.1",
   "description": "Zaif API helper with Promise",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "build": "tsc",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,9 +24,17 @@
   },
   "homepage": "https://github.com/kiyonori-matsumoto/zaif-promise#readme",
   "dependencies": {
+    "@types/node": "^8.0.56",
+    "@types/qs": "^6.5.1",
+    "@types/request-promise-native": "^1.0.10",
     "crypto": "0.0.3",
-    "moment": "^2.17.1",
-    "request-promise-native": "^1.0.3",
-    "request": "^2.34"
+    "moment": "^2.19.3",
+    "qs": "^6.5.1",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5"
+  },
+  "devDependencies": {
+    "ts-node": "^3.3.0",
+    "typescript": "^2.6.2"
   }
 }
