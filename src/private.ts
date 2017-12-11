@@ -3,22 +3,21 @@ import * as crypto from 'crypto';
 import * as rp from 'request-promise-native';
 import { Config } from './config';
 
+const AsyncLock = require('async-lock');
+
 export namespace Private {
   
-  let key = process.env.ZAIF_KEY;
-  let secret = process.env.ZAIF_SECRET;
+  let key = process.env.ZAIF_KEY || '';
+  let secret = process.env.ZAIF_SECRET || '';
   let timestamp = Date.now() / 1000.0;
+  const lock = new AsyncLock();
 
   export function set_credentials(_key: string, _secret: string) {
     key = _key;
     secret = _secret;
   }
 
-  function send_request(method: string, query: any = {}) {
-    if (!key || !secret) {
-      return Promise.reject(new Error('Private methods need key and secret'));
-    }
-
+  function build_options(method: string, query: any) {
     timestamp = timestamp + 0.001;
 
     const body = {
@@ -38,15 +37,46 @@ export namespace Private {
       },
       body: form
     };
-    return rp(options)
-      .then(JSON.parse)
-      .then(data => {
-        if(data.success === 0) {
-          return Promise.reject(new Error(data.error));
-        } else {
-          return Promise.resolve(data.return);
-        }
+    return options;
+  }
+
+  function send_request(method: string, query: any = {}) {
+    if (!key || !secret) {
+      return Promise.reject(new Error('Private methods need key and secret'));
+    }
+
+    return lock.acquire(key, () => {
+      const options = build_options(method, query);
+
+      let time = 10;
+      let tries = 0;
+
+      const delayRun = (w: number, f: any) => new Promise(resolve => {
+        setTimeout(() => resolve(f()), w)
       })
+
+      const exe = () => 
+        rp(options)
+        .then(JSON.parse)
+        .then(data => {
+          if(data.success === 0) {
+            return Promise.reject(new Error(data.error));
+          } else {
+            return Promise.resolve(data.return);
+          }
+        })
+
+      return exe()
+      .catch(e => {
+        console.error(e);
+        tries ++;
+        if (tries > 10) {
+          Promise.reject(e);
+        }
+        time *= 2;
+        return delayRun(time, exe);
+      })
+    })
   }
 
   export interface GetInfoReqponse {
