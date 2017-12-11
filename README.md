@@ -5,7 +5,7 @@ API helper for ZAIF.
 ```javascript
 const zaif = require('zaif-promise');
 
-zaif.depth()
+zaif.Public.depth()
 .then(console.log)
 .catch( (err) => {
   console.log(err.message);
@@ -22,37 +22,20 @@ key and secret are specified by following order
 ```javascript
 const zaif = require('zaif-promise');
 
-zaif.trade({
+zaif.Private.trade({
   currency_pair: 'btc_jpy',
   action: 'bid',
   price: 100000,
   amount: 0.001
 })
-.then(console.log()
-.catch( (err) => {
+.then(console.log)
+.catch(err => {
   console.error(err.message);
 })
 ```
 
 ## Retry
-You can retry latest order.
-```javascript
-const zaif = require('zaif-promise');
-
-zaif.trade({
-  currency_pair: 'btc_jpy', action: 'bid', price: 100000, amount: 0.001
-})
-.then(console.log())
-.catch( (err) => {
-  console.error(err.message);
-  return zaif.retry('trade')
-  .then( (d) => {
-    console.log("success transaction")
-  }).catch( (err) => {
-    console.error(err.message);
-  })
-})
-```
+Private api retries automatically if request failed.
 
 ## Supported order
 All private and public apis are on supported.
