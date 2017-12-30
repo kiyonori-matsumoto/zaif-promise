@@ -6,17 +6,19 @@ const rp = require("request-promise-native");
 const config_1 = require("./config");
 const AsyncLock = require('async-lock');
 const lock = new AsyncLock();
-class V2Private {
-    constructor(key, secret) {
+class RequestBase {
+    constructor(endpoint, key, secret) {
         this.key = process.env.ZAIF_KEY || '';
         this.secret = process.env.ZAIF_SECRET || '';
         this.timestamp = Date.now() / 1000.0;
+        this.endpoint = '';
         if (key) {
             this.key = key;
         }
         if (secret) {
             this.secret = secret;
         }
+        this.endpoint = endpoint;
     }
     set_credentials(_key, _secret) {
         this.key = _key;
@@ -31,7 +33,7 @@ class V2Private {
         const form = qs.stringify(Object.assign({}, body, query));
         const sign = crypto.createHmac('sha512', this.secret).update(form).digest('hex');
         const options = {
-            url: config_1.Config.endpoint + '/tapi',
+            url: config_1.Config.endpoint + this.endpoint,
             method: 'POST',
             headers: {
                 Key: this.key,
@@ -74,38 +76,5 @@ class V2Private {
             });
         });
     }
-    get_info() {
-        return this.send_request('get_info');
-    }
-    get_info2() {
-        return this.send_request('get_info2');
-    }
-    get_personal_info() {
-        return this.send_request('get_personal_info');
-    }
-    get_id_info() {
-        return this.send_request('get_id_info');
-    }
-    trade_history(query) {
-        return this.send_request('trade_history', query);
-    }
-    active_orders(query) {
-        return this.send_request('active_orders', query);
-    }
-    trade(query) {
-        return this.send_request('trade', query);
-    }
-    cancel_order(query) {
-        return this.send_request('cancel_order', query);
-    }
-    withdraw(query) {
-        return this.send_request('withdraw', query);
-    }
-    deposit_history(query) {
-        return this.send_request('deposit_history', query);
-    }
-    withdraw_history(query) {
-        return this.send_request('withdraw_history', query);
-    }
 }
-exports.V2Private = V2Private;
+exports.RequestBase = RequestBase;

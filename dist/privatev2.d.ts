@@ -1,11 +1,6 @@
-export declare class V2Private {
-    private key;
-    private secret;
-    private timestamp;
+import { RequestBase } from './request_base';
+export declare class V2Private extends RequestBase {
     constructor(key?: string, secret?: string);
-    set_credentials(_key: string, _secret: string): void;
-    private build_options(method, query);
-    private send_request(method, query?);
     get_info(): Promise<GetInfoReqponse>;
     get_info2(): Promise<GetInfo2Reqponse>;
     get_personal_info(): Promise<GetPersonalInfoResponse>;
