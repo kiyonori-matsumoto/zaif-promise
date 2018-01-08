@@ -69,7 +69,7 @@ export class RequestBase {
         .then(JSON.parse)
         .then(data => {
           if(data.success === 0) {
-            return Promise.reject(new Error(data.error));
+            return Promise.reject(new Error(data.return));
           } else {
             return Promise.resolve(data.return);
           }
