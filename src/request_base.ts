@@ -9,9 +9,10 @@ const lock = new AsyncLock();
 
 export class RequestBase {
   
+  private static timestamp = Date.now() / 1000.0;
+  
   private key = process.env.ZAIF_KEY || '';
   private secret = process.env.ZAIF_SECRET || '';
-  private timestamp = Date.now() / 1000.0;
   private endpoint = '';
 
   public constructor(endpoint: string, key?: string, secret?:string) {
@@ -26,10 +27,10 @@ export class RequestBase {
   }
 
   protected build_options(method: string, query: any) {
-    this.timestamp = this.timestamp + 0.001;
+    RequestBase.timestamp = RequestBase.timestamp + 0.001;
 
     const body = {
-      nonce: this.timestamp,
+      nonce: RequestBase.timestamp,
       method: method,
     }
 
